@@ -189,15 +189,13 @@ def main(args):
     model.eval()
     
     if args.ttft:
-        for prompt_len in args.prompt_len:
-            profile_ttft(model, args.batch_size, prompt_len, args.repeats, args.torch_profile, "ttft_fp16")
+        profile_ttft(model, args.batch_size, args.prompt_len, args.repeats, args.torch_profile, "ttft_fp16")
 
     if args.tpot:
-        for prompt_len in args.prompt_len:
-            num_heads = config.num_attention_heads
-            head_dim = config.hidden_size // num_heads
-            cache_size = (args.batch_size, num_heads, prompt_len, head_dim)
-            profile_tpot(model, cache_size, cache_size, torch.float16, args.batch_size, prompt_len, args.repeats, args.torch_profile, "tpot_fp16")
+        num_heads = config.num_attention_heads
+        head_dim = config.hidden_size // num_heads
+        cache_size = (args.batch_size, num_heads, args.prompt_len, head_dim)
+        profile_tpot(model, cache_size, cache_size, torch.float16, args.batch_size, args.prompt_len, args.repeats, args.torch_profile, "tpot_fp16")
     
 
 if __name__ =='__main__':    
@@ -208,11 +206,11 @@ if __name__ =='__main__':
     )
     parser.add_argument(
         '--batch_size', type=int, default=1,
-        help='The input batch size to Mamba. (default: 1)'
+        help='The input batch size to Llama. (default: 1)'
     )
     parser.add_argument(
-        '--prompt_len', nargs="+", type=int, default=[1024],
-        help='The number of input tokens to Mamba. (default: 1024)'
+        '--prompt_len', type=int, default=1024,
+        help='The number of input tokens to Llama. (default: 1024)'
     )
     parser.add_argument(
         '--ttft', action='store_true',
