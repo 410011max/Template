@@ -188,6 +188,10 @@ def main(args):
     model, config = build_llama(args)
     model.eval()
     
+    if args.ttft:
+        for prompt_len in args.prompt_len:
+            profile_ttft(model, args.batch_size, prompt_len, args.repeats, args.torch_profile, "ttft_fp16")
+
     if args.tpot:
         for prompt_len in args.prompt_len:
             num_heads = config.num_attention_heads
@@ -195,10 +199,6 @@ def main(args):
             cache_size = (args.batch_size, num_heads, prompt_len, head_dim)
             profile_tpot(model, cache_size, cache_size, torch.float16, args.batch_size, prompt_len, args.repeats, args.torch_profile, "tpot_fp16")
     
-    if args.ttft:
-        for prompt_len in args.prompt_len:
-            profile_ttft(model, args.batch_size, prompt_len, args.repeats, args.torch_profile, "ttft_fp16")
-
 
 if __name__ =='__main__':    
     parser = argparse.ArgumentParser()
