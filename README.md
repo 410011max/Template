@@ -10,3 +10,10 @@ pip install -r requirements.txt
 ```
 python main.py
 ```
+
+## Run Latency Evaluation
+Now supporting ttft (prefilling stage) and tpot (decoding stage)
+```
+python profile_llama.py \
+--prompt_len 512 1024 2048 --ttft 
+```
